@@ -1,0 +1,9 @@
+openpyxl~=3.1.2
+python-taiga
+python-dotenv~=1.0.1
+openai
+
+Django~=5.0.3
+environ~=1.0
+transliterate
+bcrypt

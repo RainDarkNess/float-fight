@@ -1,0 +1,7 @@
+.idea
+.venv
+
+.env
+*.xlsx
+
+mydatabase
