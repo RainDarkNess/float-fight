@@ -5,6 +5,7 @@
 {% block content %}
 
 <title>Игра</title>
+    <h1>{{ room_name }}</h1>
 <div></div>
 <style>
     body {
@@ -20,8 +21,8 @@
     .iksweb {
         border-collapse: collapse;
         border-spacing: 0;
-        margin-top: 20px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        margin: 20px;
     }
 
     .iksweb, .iksweb td, .iksweb th {
@@ -32,11 +33,13 @@
         padding: 0;
         cursor: pointer;
         transition: background 0.3s;
+        width: 40px;
+        height: 40px;
     }
 
     .iksweb div {
-        width: 30px;
-        height: 30px;
+        width: 40px;
+        height: 40px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -60,22 +63,96 @@
         text-align: center;
         color: #333;
     }
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
+    padding: 20px;
+}
+
+.game-board {
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+.cell {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #999;
+    background-color: #299fff;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+.cell:hover {
+    background-color: #e0e0e0;
+}
+
+.cell-crush {
+    background-color: #ff0000;
+    border: #a20000 solid 10px;
+    animation: clickAnimation 0.3s forwards;
+}
+
+@keyframes clickAnimation {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(2); /* Уменьшаем размер на 10% */
+    }
+    100% {
+        transform: scale(1);
+    }
+}
 </style>
 <div id="app">
-    <table class="iksweb">
-        <tbody>
-            <tr v-for="(m,x) in matrix">
-                <td v-for="(j,y) in m">
-                    <template v-if="j === 1">
-                        <div style="width: 100px; height: 100px; background: #4e88df" @click="send_request(x,y)"></div>
-                    </template>
-                    <template v-else>
-                        <div style="width: 100px; height: 100px; background: #0d1117" @click="send_request(x,y)"></div>
-                    </template>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<div style="display: flex;">
+    <div>
+    <h2 align="center">{{ player_name }}</h2>
+        <table class="iksweb">
+            <tbody>
+                <tr v-for="(m,x) in matrix">
+                    <td v-for="(j,y) in m">
+                        <template v-if="j === 1">
+                            <div
+                                    style="background: #4e88df"
+                                     @click="send_request_MY(x,y)"
+                            ></div>
+                        </template>
+                        <template v-else>
+                            <div
+                                    style="background: #0d1117"
+                                    @click="send_request_MY(x,y)"
+                            ></div>
+                        </template>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    <h3 align="center">Кораблей осталось: [[player_ship_count]]</h3>
+
+    </div>
+    <div>
+        <h2 align="center">{{ enemy_name }}</h2>
+        <table class="iksweb">
+            <tbody>
+                <tr v-for="(m,x) in matrix_enemy">
+                    <td v-for="(j,y) in m">
+                        <template v-if="j === 1">
+                            <div
+                                class="cell"
+                                @click="set_martix(x,y)"></div>
+                        </template>
+                        <template v-else>
+                            <div class="cell-crush"></div>
+                        </template>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
 
@@ -84,15 +161,65 @@
         el: "#app",
         delimiters: ['[[', ']]'],
         data: {
-            matrix: {{matrix}},
+            matrix: {{ matrix }},
+            matrix_enemy: {{ matrix_enemy }},
+            player_name: '{{ player_name }}',
+            player_ship_count: {{ player_ship_count }}
         },
         methods: {
             async start() {
 
             },
+
             async send_request(x,y) {
                 try {
-                    const response = await fetch(`/get-matrix/{{session_id}}/`);
+                    const response = await fetch('/get-matrix/{{session_id}}_{{ enemy_name }}/');
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    const data = await response.json();
+                    this.matrix_enemy = data.matrix
+                    this.matrix_enemy[x][y] = +!this.matrix_enemy[x][y]
+
+                } catch (error) {
+                    console.error('There was a problem with the fetch operation:', error);
+                }
+            this.matrix_enemy[x][y].clicked = true;
+            setTimeout(() => {
+                this.matrix_enemy[x][y].clicked = false;
+            }, 500);
+                await this.set_martix(x,y)
+            },
+
+
+
+            async set_martix(x,y){
+                try {
+                const response = await fetch('/set-matrix/{{session_id}}_{{ enemy_name }}_'+x+'_'+y+'/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': this.getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        matrix: this.matrix_enemy
+                    })
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                this.matrix_enemy = data.matrix
+                } catch (error) {
+                    console.error('There was a problem with the fetch operation:', error);
+                }
+            },
+
+
+
+            async send_request_MY(x,y) {
+                try {
+                    const response = await fetch('/get-matrix-MY/{{session_id}}_{{ player_name }}/');
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
@@ -103,19 +230,21 @@
                 } catch (error) {
                     console.error('There was a problem with the fetch operation:', error);
                 }
-                this.set_martix()
+            this.matrix[x][y].clicked = true;
+            setTimeout(() => {
+                this.matrix[x][y].clicked = false;
+            }, 500);
+                await this.set_martix_MY(x,y)
             },
-            async set_martix(){
+
+            async set_martix_MY(x,y){
                 try {
-                const response = await fetch(`/set-matrix/{{session_id}}/`, {
+                const response = await fetch('/set-matrix-MY/{{session_id}}_{{ player_name }}_'+x+'_'+y+'/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': this.getCookie('csrftoken')
                     },
-                    body: JSON.stringify({
-                        matrix: this.matrix
-                    })
                 });
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -126,6 +255,8 @@
                     console.error('There was a problem with the fetch operation:', error);
                 }
             },
+
+
             // Функция для получения CSRF-токена
         getCookie(name) {
             let cookieValue = null;

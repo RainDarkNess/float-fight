@@ -28,12 +28,15 @@ class LoginForm(forms.Form):
 
 
 class SessionForm(forms.ModelForm):
-    name_session = forms.CharField(max_length=30)
+    Имя_сессии = forms.CharField(max_length=30)
+    Имя_игрока = forms.CharField(max_length=30)
 
     class Meta:
         model = Session
-        fields = ['name_session']
+        fields = ['Имя_сессии', 'Имя_игрока']
 
 
 class SessionSet(forms.Form):
-    name_session = forms.CharField(max_length=30)
+    Имя_сессии = forms.CharField(max_length=30)
+    Имя_игрока = forms.CharField(max_length=30)
+

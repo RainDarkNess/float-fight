@@ -19,14 +19,15 @@ from django.urls import path
 from taigaweb import views
 
 urlpatterns = [
-    path('', views.register),
+    # path('', views.register),
+    path('', views.userChoose, name='choose'),
     path('startSession/<int:session_id>/', views.startSession, name='start_session_with_id'),
-    path('startSession/', views.startSession, name='start_session'),
+    path('toSession/<int:session_id>/', views.toSession, name='to_session'),
     path('createSession/', views.createSession, name='create_session'),
     path('userChoose/', views.userChoose, name='choose'),
-    path('register/', views.register, name='register'),
-    path('login/', views.login, name='login'),
-    path('logout/', views.logout, name='logout'),
-    path('get-matrix/<int:session_id>/', views.get_matrix, name='get_matrix'),
-    path('set-matrix/<int:session_id>/', views.set_matrix, name='set_matrix'),
+    path('get-matrix/<str:session_id>/', views.get_matrix, name='get_matrix'),
+    path('set-matrix/<str:session_id>/', views.set_matrix, name='set_matrix'),
+
+    path('get-matrix-MY/<str:session_id>/', views.get_matrix_MY, name='get_matrix_MY'),
+    path('set-matrix-MY/<str:session_id>/', views.set_matrix_MY, name='set_matrix_MY'),
 ]
