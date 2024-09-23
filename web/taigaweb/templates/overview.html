@@ -94,6 +94,18 @@
     animation: clickAnimation 0.3s forwards;
 }
 
+.cell-void {
+    background-color: #620d0d;
+    border: #282828 solid 10px;
+    animation: clickAnimation 0.3s forwards;
+}
+
+.cell-ship {
+    background-color: #126067;
+    border: #282828 solid 10px;
+    animation: clickAnimation 0.3s forwards;
+}
+
 @keyframes clickAnimation {
     0% {
         transform: scale(1);
@@ -114,15 +126,29 @@
             <tbody>
                 <tr v-for="(m,x) in matrix">
                     <td v-for="(j,y) in m">
-                        <template v-if="j === 1">
+
+                        <template v-if="j === 2">
                             <div
+                                    class="cell-void"
+                                     @click="send_request_MY(x,y)"
+                            ></div>
+                        </template>
+                        <template v-else-if="j === 0">
+                            <div
+                                     class="cell-crush"
+                            ></div>
+                        </template>
+                        <template v-else-if="j === 3">
+                            <div
+                                    class="cell-ship"
                                     style="background: #4e88df"
                                      @click="send_request_MY(x,y)"
                             ></div>
                         </template>
+
                         <template v-else>
                             <div
-                                    style="background: #0d1117"
+                                    class="cell"
                                     @click="send_request_MY(x,y)"
                             ></div>
                         </template>
@@ -144,7 +170,10 @@
                                 class="cell"
                                 @click="set_martix(x,y)"></div>
                         </template>
-                        <template v-else>
+                        <template v-else-if="j === 2">
+                            <div class="cell-void"></div>
+                        </template>
+                        <template v-else-if="j === 0">
                             <div class="cell-crush"></div>
                         </template>
                     </td>
@@ -168,7 +197,15 @@
         },
         methods: {
             async start() {
+               //setInterval(this.get_enemy_martix(), 1000);
+               //setInterval(this.get_my_martix(), 1000);
 
+                setInterval(() => {
+                    this.get_enemy_martix();
+                }, 1000);
+                setInterval(() => {
+                    this.get_my_martix();
+                }, 1000);
             },
 
             async send_request(x,y) {
@@ -251,6 +288,8 @@
                 }
                 const data = await response.json();
                 this.matrix = data.matrix
+                this.player_ship_count = data.player_ship_count
+
                 } catch (error) {
                     console.error('There was a problem with the fetch operation:', error);
                 }
@@ -273,6 +312,35 @@
             }
             return cookieValue;
         },
+
+
+
+            async get_enemy_martix() {
+                try {
+                    const response = await fetch('/get-matrix/{{session_id}}_{{ enemy_name }}/');
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    const data = await response.json();
+                    this.matrix_enemy = data.matrix
+                } catch (error) {
+                    console.error('There was a problem with the fetch operation:', error);
+                }
+            },
+
+            async get_my_martix() {
+                try {
+                    const response = await fetch('/get-matrix-MY/{{session_id}}_{{ player_name }}/');
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    const data = await response.json();
+                    this.matrix = data.matrix
+                } catch (error) {
+                    console.error('There was a problem with the fetch operation:', error);
+                }
+            },
+
         },
         mounted() {
             this.start()

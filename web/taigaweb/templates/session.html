@@ -60,7 +60,7 @@
 <body>
 <div>
     <h1 align="center">Создание комнаты</h1>
-
+    <h2 align="center">{{ warning }}</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
