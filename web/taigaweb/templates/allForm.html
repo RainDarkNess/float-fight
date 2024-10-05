@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Регистрация</title>
+    <title>{{ pageTitle }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,11 +55,15 @@
 </head>
 <body>
 <div>
-    <h1 align="center">Регистрация</h1>
+    <h1 align="center">{{ formTitle }}</h1>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Зарегистрироваться</button>
+        <button type="submit">{{ buttonName }}</button>
+{#        <a href="login/" style="text-align: center; width: 100%; display: block; padding-top: 10px">Войти</a>#}
+        {{ other | safe }}
+{#        <a style="display: block; text-align: center; margin-top: 10px" href="/getAllArticles/">Перейти ко всем статьям</a>#}
+
     </form>
 </div>
 </body>

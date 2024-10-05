@@ -20,7 +20,9 @@ from taigaweb import views
 
 urlpatterns = [
     # path('', views.register),
-    path('', views.userChoose, name='choose'),
+    path('', views.register, name='register'),
+    path('login/', views.login, name='login'),
+
     path('startSession/<int:session_id>/', views.startSession, name='start_session_with_id'),
     path('toSession/<int:session_id>/', views.toSession, name='to_session'),
     path('createSession/', views.createSession, name='create_session'),
@@ -30,4 +32,14 @@ urlpatterns = [
 
     path('get-matrix-MY/<str:session_id>/', views.get_matrix_MY, name='get_matrix_MY'),
     path('set-matrix-MY/<str:session_id>/', views.set_matrix_MY, name='set_matrix_MY'),
+
+    path('hello-world/', views.helloWorld, name='hello-world'),
+    path('article/<int:article_id>/', views.article, name='article'),
+    path('addArticle/', views.addArticle, name='add_article'),
+    path('getAllArticles/', views.getAllArticles, name='get-all-articles'),
+    path('redacting/<int:article_id>/', views.redacting, name='redacting'),
+    path('restoreAccount/', views.restoreAccount, name='restore-account'),
+    path('codeCheckFun/<int:user_id>/', views.codeCheckFun, name='code-check-fun'),
+    path('editPass/<int:user_id>/', views.editPass, name='edit-pass'),
+
 ]

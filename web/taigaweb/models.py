@@ -61,15 +61,69 @@ class Session(models.Model):
         return f"{self.name_session}"
 
 
+class restartCode(models.Model):
+    restart_code = models.CharField(max_length=4)
+
+    def addCode(self, restart_code):
+        self.restart_code = restart_code
+
+    def __str__(self):
+        return f"{self.restart_code}"
+
+
 class Users(models.Model):
     login = models.CharField(max_length=30)
     password = models.CharField(max_length=30)
+    email = models.EmailField(max_length=30, default='')
 
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
+
+    def set_username(self, username):
+        self.login = username
+
+    def get_username(self):
+        return self.login
+
+    def setEmail(self, email):
+        self.email = email
 
     def check_password(self, raw_password):
         return check_password(raw_password, self.password)
 
     def __str__(self):
         return self.login
+
+
+class Article(models.Model):
+    label = models.CharField(max_length=200)
+    body = models.TextField(max_length=200)
+    datePublish = models.DateTimeField()
+    author = models.CharField(max_length=200, default="")
+
+    def setBody(self, body):
+        self.body = body
+
+    def setAuthor(self, author):
+        self.author = author
+
+    def setLabel(self, label):
+        self.label = label
+
+    def setDatePublish(self, datePublish):
+        self.datePublish = datePublish
+
+    def getBody(self):
+        return self.body
+
+    def getLabel(self):
+        return self.label
+
+    def getDatePublish(self):
+        return self.datePublish
+
+    def getAuthor(self):
+        return self.author
+
+    def __str__(self):
+        return self.label

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Вход</title>
+    <title>Редактирование статьи</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -27,8 +27,9 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            {#width: 300px;#}
             text-align: center;
+            display: table-caption;
         }
 
         input[type="text"],
@@ -56,15 +57,16 @@
         }
     </style>
 </head>
+
 <body>
 <div>
-    <h1 align="center">Вход</h1>
-    <h2>{{alert}}</h2>
+    <h1 align="center">Редактирование статьи</h1>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Login</button>
+        <button type="submit">Изменить</button>
     </form>
+    <a style="display: block; text-align: center; margin-top: 10px" href="/getAllArticles/">Перейти ко всем статьям</a>
 </div>
 </body>
 </html>

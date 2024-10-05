@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статьи</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-title {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .article-date {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .article-content {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 0.9em;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="article-title">Все статьи</h1>
+        <h2><a href="/addArticle">Создать статью</a></h2>
+        {{ render_article| safe }}
+    </div>
+</body>
+</html>
