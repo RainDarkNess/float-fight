@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'taigaweb',
+    'api',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

@@ -15,13 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.urls import path
+from django.urls import path, include
 from taigaweb import views
+
 
 urlpatterns = [
     # path('', views.register),
     path('', views.register, name='register'),
     path('login/', views.login, name='login'),
+
 
     path('startSession/<int:session_id>/', views.startSession, name='start_session_with_id'),
     path('toSession/<int:session_id>/', views.toSession, name='to_session'),
@@ -33,6 +35,7 @@ urlpatterns = [
     path('get-matrix-MY/<str:session_id>/', views.get_matrix_MY, name='get_matrix_MY'),
     path('set-matrix-MY/<str:session_id>/', views.set_matrix_MY, name='set_matrix_MY'),
 
+    # user control
     path('hello-world/', views.helloWorld, name='hello-world'),
     path('article/<int:article_id>/', views.article, name='article'),
     path('addArticle/', views.addArticle, name='add_article'),
@@ -42,4 +45,6 @@ urlpatterns = [
     path('codeCheckFun/<int:user_id>/', views.codeCheckFun, name='code-check-fun'),
     path('editPass/<int:user_id>/', views.editPass, name='edit-pass'),
 
+    # rest api
+    path('api/', include('api.urls')),
 ]
